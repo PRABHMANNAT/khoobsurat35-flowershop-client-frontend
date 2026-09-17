@@ -1,60 +1,130 @@
-const photos = {
-  roses: 'https://images.unsplash.com/photo-1487035092507-28f5c8ba203e?auto=format&fit=crop&w=1200&q=85',
-  pastel: 'https://images.unsplash.com/photo-1622296885521-77549e53b888?auto=format&fit=crop&w=1200&q=85',
-  red: 'https://images.unsplash.com/photo-1671004338674-bcb0579ebfee?auto=format&fit=crop&w=1200&q=85',
-  blush: 'https://images.unsplash.com/photo-1626161290912-d415a83683fb?auto=format&fit=crop&w=1200&q=85',
-  gift: 'https://images.unsplash.com/photo-1683844234556-bc37ff33efc1?auto=format&fit=crop&w=1200&q=85'
-};
-const products = [
-  {id:1,name:'The Blush Edit',price:1299,description:'Soft pinks. The sweetest little gesture.',image:photos.blush,category:'gentle',tag:'A SOFT SPOT'},
-  {id:2,name:'Love, in Bloom',price:1499,description:'Romantic roses. A whole lot of feeling.',image:photos.roses,category:'romance',tag:'THE ROMANTIC'},
-  {id:3,name:'Pastel Poetry',price:1699,description:'A dreamy gathering of delicate blooms.',image:photos.pastel,category:'joy',tag:'A LITTLE JOY'},
-  {id:4,name:'Forever Yours',price:1899,description:'Classic red roses, beautifully gathered.',image:photos.red,category:'romance',tag:'TIMELESS LOVE'},
-  {id:5,name:'A Sweet Surprise',price:1199,description:'Wrapped with love. Ready to make a day.',image:photos.gift,category:'joy',tag:'JUST BECAUSE'},
-  {id:6,name:'Sunday Kind of Love',price:1599,description:'Gentle colours for life’s quieter moments.',image:photos.pastel,category:'gentle',tag:'SLOW & LOVELY'}
+const products=[
+  {id:1,name:'Rose & Gypsophila',type:'rose',price:899,image:'images/unnamed%20(8).webp',note:'Pink roses with delicate white fillers.',detail:'A soft, easy-going bunch for birthdays, desk days, and thoughtful little gestures.'},
+  {id:2,name:'The Classic Dozen',type:'rose',price:1199,image:'images/unnamed%20(11).webp',note:'A timeless red and white rose mix.',detail:'A classic rose arrangement with all the romance, wrapped and ready to give.'},
+  {id:3,name:'Birthday Lilies & Treats',type:'gift',price:1599,image:'images/unnamed%20(5).webp',note:'Lilies, chocolates and a little celebration.',detail:'An all-in-one birthday moment with fresh flowers and something sweet alongside.'},
+  {id:4,name:'Fresh Flower Counter',type:'bouquet',price:1299,image:'images/unnamed%20(15).webp',note:'Choose the colour mood you love.',detail:'A florist-led seasonal gathering. Tell us your preferred colour story at pickup.'},
+  {id:5,name:'Yellow Rose Wrap',type:'rose',price:799,image:'images/unnamed%20(10).webp',note:'Bright roses tied in a simple paper wrap.',detail:'Sunny, uncomplicated roses wrapped for a just-because kind of day.'},
+  {id:6,name:'Garden Colour Mix',type:'bouquet',price:1799,image:'images/unnamed%20(6).webp',note:'A bold mix for a full-hearted gesture.',detail:'A colourful, abundant mix for the moments that ask for something extra.'}
 ];
-const cart = new Map();
-const money = value => '₹' + value.toLocaleString('en-IN');
-const cartDialog = document.querySelector('#cart-dialog');
-const bookingDialog = document.querySelector('#booking-dialog');
-document.querySelector('#hero-image').src=photos.blush;
-document.querySelector('#shop-image').src='https://floweraura-blog-img.s3.ap-south-1.amazonaws.com/flower-gifts-blog/vendors-in-flower-market.jpg';
+
+const cart=new Map();
+const savedFavorites=(()=>{try{return JSON.parse(localStorage.getItem('k35-favorites')||'[]')}catch{return[]}})();
+const favorites=new Set(savedFavorites);
+const money=value=>`₹${value.toLocaleString('en-IN')}`;
+const icon=name=>`<svg aria-hidden="true"><use href="#i-${name}"/></svg>`;
+const cartDialog=document.querySelector('#cart-dialog');
+const bookingDialog=document.querySelector('#booking-dialog');
+const productDialog=document.querySelector('#product-dialog');
+const toast=document.querySelector('.toast');
+let activeFilter='all',searchTerm='',sortBy='featured',activeSlide=0;
+
 document.querySelector('#year').textContent=new Date().getFullYear();
-const today = new Date();
-document.querySelector('[name=date]').min=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-function renderProducts(filter='all') {
-  document.querySelector('#products').innerHTML=products.filter(p=>filter==='all'||p.category===filter).map(p=>`<article class="product"><div class="product-image"><img src="${p.image}" alt="${p.name} flower arrangement" loading="lazy"><span class="tag">${p.tag}</span><button class="add-button" data-add="${p.id}" aria-label="Add ${p.name} to bag">+</button></div><div class="product-info"><h3>${p.name}</h3><strong>${money(p.price)}</strong></div><p>${p.description}</p></article>`).join('');
-  document.querySelectorAll('[data-filter]').forEach(b=>{b.classList.toggle('active',b.dataset.filter===filter);b.setAttribute('aria-pressed',b.dataset.filter===filter);});
+const today=new Date();
+document.querySelector('[name="date"]').min=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+function filteredProducts(){
+  const visible=products.filter(product=>{
+    const matchesFilter=activeFilter==='all'||product.type===activeFilter;
+    const searchable=`${product.name} ${product.note} ${product.type}`.toLowerCase();
+    return matchesFilter&&searchable.includes(searchTerm);
+  });
+  return visible.sort((a,b)=>sortBy==='low'?a.price-b.price:sortBy==='high'?b.price-a.price:sortBy==='name'?a.name.localeCompare(b.name):a.id-b.id);
 }
+
+function observeCards(){
+  const cards=document.querySelectorAll('.product-card');
+  if(!('IntersectionObserver'in window)){cards.forEach(card=>card.classList.add('in-view'));return;}
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in-view');observer.unobserve(entry.target)}}),{threshold:.1});
+  cards.forEach((card,index)=>{card.style.transitionDelay=`${index*45}ms`;observer.observe(card)});
+}
+
+function renderProducts(){
+  const visible=filteredProducts();
+  document.querySelector('#collection-count').textContent=`${visible.length} ${visible.length===1?'piece':'pieces'}`;
+  document.querySelector('#products').innerHTML=visible.length?visible.map(product=>`
+    <article class="product-card">
+      <div class="product-image">
+        <img src="${product.image}" alt="${product.name}" loading="lazy">
+        <button class="product-action favorite-button ${favorites.has(product.id)?'is-saved':''}" data-favorite="${product.id}" aria-label="${favorites.has(product.id)?'Remove':'Save'} ${product.name}" aria-pressed="${favorites.has(product.id)}">${icon('heart')}</button>
+        <button class="product-action add-button" data-add="${product.id}" aria-label="Add ${product.name} to bag">${icon('plus')}</button>
+        <button class="product-action view-button" data-view="${product.id}" aria-label="View ${product.name} details">${icon('arrow')}</button>
+      </div>
+      <div class="product-meta"><div><h3>${product.name}</h3><p>${product.note}</p></div><strong>${money(product.price)}</strong></div>
+    </article>`).join(''):`<div class="no-results"><h3>Nothing matched just yet.</h3><p>Try another flower, colour or feeling.</p><button class="underlink" data-clear-search type="button"><span>Clear search</span>${icon('arrow')}</button></div>`;
+  document.querySelectorAll('[data-filter]').forEach(button=>{const isActive=button.dataset.filter===activeFilter;button.classList.toggle('active',isActive);button.setAttribute('aria-pressed',isActive)});
+  observeCards();
+}
+
 function renderCart(){
-  let count=0,total=0;
-  const lines=[...cart].map(([id,qty])=>{const p=products.find(p=>p.id===id);count+=qty;total+=qty*p.price;return `<div class="cart-item"><img src="${p.image}" alt="${p.name}"><div><h3>${p.name}</h3><p>${money(p.price)}</p><div class="quantity"><button data-change="${id}" data-delta="-1" aria-label="Decrease ${p.name} quantity">−</button><span>${qty}</span><button data-change="${id}" data-delta="1" aria-label="Increase ${p.name} quantity">+</button></div></div><button class="remove" data-remove="${id}" aria-label="Remove ${p.name}">Remove</button></div>`;});
-  document.querySelectorAll('.cart-count').forEach(e=>e.textContent=count);
-  document.querySelector('#cart-body').innerHTML=lines.length?lines.join(''):'<div class="empty-cart"><span>✳</span><h3>A little room for joy.</h3><p>Your bag is waiting for something beautiful.</p><button class="button primary" data-browse>Explore the flowers ↗</button></div>';
-  document.querySelector('#cart-bottom').innerHTML=lines.length?`<div class="cart-total"><span>Subtotal</span><strong>${money(total)}</strong></div><button class="button primary" id="book">Plan my booking <span>↗</span></button><p>Sample prices. Pick-up booking preview only — no payment required.</p>`:'';
+  let total=0,count=0;
+  const items=[...cart].map(([id,quantity])=>{
+    const product=products.find(item=>item.id===id);total+=product.price*quantity;count+=quantity;
+    return `<div class="cart-line"><img src="${product.image}" alt="${product.name}"><div><h3>${product.name}</h3><p>${money(product.price)}</p><div class="quantity"><button data-change="${id}" data-delta="-1" aria-label="Decrease quantity">−</button><span>${quantity}</span><button data-change="${id}" data-delta="1" aria-label="Increase quantity">+</button></div></div><button class="remove" data-remove="${id}">Remove</button></div>`;
+  });
+  document.querySelectorAll('.cart-count').forEach(element=>element.textContent=count);
+  document.querySelector('#cart-body').innerHTML=items.length?items.join(''):`<div class="empty"><p class="empty-mark">✦</p><h3>Your flower bag is waiting.</h3><p>Choose something lovely for someone — including you.</p><button class="underlink" data-browse type="button"><span>Browse the flower edit</span>${icon('arrow')}</button></div>`;
+  document.querySelector('#cart-bottom').innerHTML=items.length?`<div class="subtotal"><span>Subtotal</span><b>${money(total)}</b></div><button class="button dark booking-open" type="button"><span>Plan a flower moment</span>${icon('calendar')}</button><p class="cart-note">A visual shopping preview only — no payment or order is sent.</p>`:'';
 }
-let toastTimer;
-function notify(message){const el=document.querySelector('.toast');el.textContent=message;el.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('visible'),2800);}
-function openDialog(dialog){dialog.showModal();document.body.style.overflow='hidden';}
-document.querySelectorAll('dialog').forEach(dialog=>{
-  dialog.addEventListener('close',()=>document.body.style.overflow='');
-  dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
+
+function notify(message){toast.textContent=message;toast.classList.add('show');clearTimeout(notify.timer);notify.timer=setTimeout(()=>toast.classList.remove('show'),2600)}
+function openDialog(dialog){dialog.showModal();document.body.classList.add('modal-open')}
+function closeDialog(dialog){dialog.close();document.body.classList.remove('modal-open')}
+function storeFavorites(){try{localStorage.setItem('k35-favorites',JSON.stringify([...favorites]))}catch{}}
+function openProduct(id){
+  const product=products.find(item=>item.id===id);
+  document.querySelector('#product-detail').innerHTML=`<img class="product-detail-image" src="${product.image}" alt="${product.name}"><div class="product-detail-copy"><p class="kicker">THE DAILY FLOWER EDIT · ${product.type.toUpperCase()}</p><h2>${product.name}</h2><span class="detail-price">${money(product.price)}</span><p>${product.detail}</p><p class="detail-note">Fresh stems vary with the season. For a particular flower or colour palette, add a note to your booking.</p><button class="button dark" data-detail-add="${product.id}" type="button"><span>Add to flower bag</span>${icon('bag')}</button></div>`;
+  openDialog(productDialog);
+}
+
+function activateSlide(index){
+  const slides=[...document.querySelectorAll('.hero-slide')];
+  const dots=[...document.querySelectorAll('[data-slide]')];
+  activeSlide=(index+slides.length)%slides.length;
+  slides.forEach((slide,slideIndex)=>slide.classList.toggle('active',slideIndex===activeSlide));
+  dots.forEach((dot,dotIndex)=>{const isActive=dotIndex===activeSlide;dot.classList.toggle('active',isActive);dot.setAttribute('aria-selected',isActive)});
+  document.querySelector('#hero-number').textContent=String(activeSlide+1).padStart(2,'0');
+}
+
+document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog)closeDialog(dialog)}));
+document.querySelector('#flower-search').addEventListener('input',event=>{searchTerm=event.target.value.trim().toLowerCase();renderProducts()});
+document.querySelector('#sort-products').addEventListener('change',event=>{sortBy=event.target.value;renderProducts()});
+document.querySelector('.scroll-top').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+document.querySelectorAll('[data-slide]').forEach(button=>button.addEventListener('click',()=>activateSlide(Number(button.dataset.slide))));
+setInterval(()=>activateSlide(activeSlide+1),5200);
+window.addEventListener('scroll',()=>document.querySelector('.scroll-top').classList.toggle('show',window.scrollY>550),{passive:true});
+
+if('IntersectionObserver'in window){
+  const navLinks=document.querySelectorAll('[data-nav]');
+  const sections=['top','flowers','visit'].map(id=>document.querySelector(`#${id}`));
+  const navObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)navLinks.forEach(link=>link.classList.toggle('active',link.dataset.nav===entry.target.id))}),{rootMargin:'-35% 0px -55% 0px'});
+  sections.forEach(section=>navObserver.observe(section));
+  const studio=document.querySelector('.story-panel');
+  new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('in-view')}),{threshold:.2}).observe(studio);
+}
+
+document.addEventListener('click',event=>{
+  const add=event.target.closest('[data-add],[data-detail-add]');
+  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd);cart.set(id,(cart.get(id)||0)+1);renderCart();if(productDialog.open)closeDialog(productDialog);notify(`${products.find(product=>product.id===id).name} added to your flower bag`);return;}
+  const favorite=event.target.closest('[data-favorite]');
+  if(favorite){const id=Number(favorite.dataset.favorite);favorites.has(id)?favorites.delete(id):favorites.add(id);storeFavorites();renderProducts();notify(favorites.has(id)?'Saved for later':'Removed from saved flowers');return;}
+  const view=event.target.closest('[data-view]');if(view){openProduct(Number(view.dataset.view));return;}
+  const filter=event.target.closest('[data-filter]');if(filter){activeFilter=filter.dataset.filter;renderProducts();return;}
+  const filterLink=event.target.closest('[data-filter-link]');if(filterLink){activeFilter=filterLink.dataset.filterLink;searchTerm='';document.querySelector('#flower-search').value='';renderProducts();return;}
+  if(event.target.closest('.bag-button,[data-open-bag]')){renderCart();openDialog(cartDialog);return;}
+  const close=event.target.closest('.close-dialog');if(close){closeDialog(close.closest('dialog'));return;}
+  const change=event.target.closest('[data-change]');if(change){const id=Number(change.dataset.change),next=cart.get(id)+Number(change.dataset.delta);next>0?cart.set(id,next):cart.delete(id);renderCart();return;}
+  const remove=event.target.closest('[data-remove]');if(remove){cart.delete(Number(remove.dataset.remove));renderCart();return;}
+  if(event.target.closest('[data-browse]')){closeDialog(cartDialog);document.querySelector('#flowers').scrollIntoView({behavior:'smooth'});return;}
+  if(event.target.closest('[data-clear-search]')){searchTerm='';document.querySelector('#flower-search').value='';renderProducts();return;}
+  if(event.target.closest('.booking-open')){if(cartDialog.open)closeDialog(cartDialog);document.querySelector('#booking-form').hidden=false;document.querySelector('#booking-success').hidden=true;openDialog(bookingDialog);return;}
+  if(event.target.closest('[data-contact]'))notify('Phone support is coming soon — visit us in Sector 35A.');
 });
-document.addEventListener('click',e=>{
-  const add=e.target.closest('[data-add]');
-  if(add){const id=Number(add.dataset.add);cart.set(id,(cart.get(id)||0)+1);renderCart();notify(`${products.find(p=>p.id===id).name} added to your bag`);}
-  const filter=e.target.closest('[data-filter]');if(filter)renderProducts(filter.dataset.filter);
-  const occasion=e.target.closest('[data-occasion]');if(occasion){renderProducts(occasion.dataset.occasion==='birthday'?'joy':occasion.dataset.occasion);document.querySelector('#collection').scrollIntoView({behavior:'smooth'});}
-  if(e.target.closest('.cart-trigger')){renderCart();openDialog(cartDialog);}
-  if(e.target.closest('.close-dialog'))e.target.closest('dialog').close();
-  const change=e.target.closest('[data-change]');if(change){const id=Number(change.dataset.change);const next=cart.get(id)+Number(change.dataset.delta);if(next>0)cart.set(id,next);else cart.delete(id);renderCart();}
-  const remove=e.target.closest('[data-remove]');if(remove){cart.delete(Number(remove.dataset.remove));renderCart();}
-  if(e.target.closest('[data-browse]')){cartDialog.close();document.querySelector('#collection').scrollIntoView({behavior:'smooth'});}
-  if(e.target.closest('#book')){cartDialog.close();document.querySelector('#booking-form').hidden=false;document.querySelector('#booking-success').hidden=true;openDialog(bookingDialog);}
+
+document.querySelector('#booking-form').addEventListener('submit',event=>{
+  event.preventDefault();
+  const values=new FormData(event.target),date=new Date(`${values.get('date')}T12:00:00`);
+  document.querySelector('#success-summary').textContent=`${values.get('name')}, your ${values.get('occasion').toLowerCase()} is pencilled in for ${date.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}.`;
+  event.target.hidden=true;document.querySelector('#booking-success').hidden=false;
 });
-document.querySelector('#booking-form').addEventListener('submit',e=>{
-  e.preventDefault();const form=new FormData(e.target);const date=new Date(form.get('date')+'T12:00:00');
-  document.querySelector('#success-summary').textContent=`${form.get('name')}, your sample pick-up is planned for ${date.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}. Your flower bag has ${[...cart.values()].reduce((a,b)=>a+b,0)} arrangement(s).`;
-  e.target.hidden=true;document.querySelector('#booking-success').hidden=false;
-});
-renderProducts();renderCart();
+renderProducts();
+renderCart();
