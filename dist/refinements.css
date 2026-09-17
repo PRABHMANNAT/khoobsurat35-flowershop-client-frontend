@@ -108,3 +108,17 @@
 .flower-marquee b { color: var(--rose); font-size: .75rem; }
 
 @keyframes flower-ticker { to { transform: translateX(-40%); } }
+
+.story-photo img { transform: scale(1.2) translateY(3%); }
+.story-panel.in-view .story-photo img { transform: scale(1) translateY(0); }
+
+.story-copy {
+  background: radial-gradient(circle at 85% 18%, #ffd9d4 0, transparent 25%), #f5dcdf;
+  color: var(--wine);
+}
+
+.story-copy .kicker { color: #a44761; }
+.story-copy h2 { color: var(--wine); }
+.story-copy h2 i { color: var(--rose); }
+.story-copy > p:not(.kicker) { color: #704d58; }
+.story-copy .underlink { padding: .78rem 1rem; border: 0; border-radius: 999px; background: var(--berry); color: #fff; }
