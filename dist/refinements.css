@@ -19,3 +19,26 @@
 .hero-shade {
   background: linear-gradient(180deg, #2d0f1912 0%, #30101d1c 30%, #35111fdc 100%);
 }
+
+.quick-links a {
+  grid-template-columns: auto auto 1fr auto;
+  border-color: #ebc5c9;
+  background: linear-gradient(145deg, #fffdfc, #fff3f1);
+}
+
+.quick-links a small {
+  color: var(--rose);
+  font: 8px var(--mono);
+}
+
+.quick-links a .quick-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--blush);
+  color: var(--berry);
+}
+
+.quick-links a .quick-icon svg { width: .95rem; }
