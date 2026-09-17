@@ -122,3 +122,19 @@
 .story-copy h2 i { color: var(--rose); }
 .story-copy > p:not(.kicker) { color: #704d58; }
 .story-copy .underlink { padding: .78rem 1rem; border: 0; border-radius: 999px; background: var(--berry); color: #fff; }
+
+.journal-call {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  margin-top: 1.25rem;
+  padding: .72rem .9rem;
+  border: 1px solid var(--berry);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--berry);
+  font: 700 9px var(--sans);
+}
+
+.journal-call svg { width: 1rem; }
+.journal-call svg:last-child { margin-left: .3rem; }
