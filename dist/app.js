@@ -41,16 +41,19 @@ function observeCards(){
 function renderProducts(){
   const visible=filteredProducts();
   document.querySelector('#collection-count').textContent=`${visible.length} ${visible.length===1?'piece':'pieces'}`;
-  document.querySelector('#products').innerHTML=visible.length?visible.map(product=>`
+  document.querySelector('#products').innerHTML=visible.length?visible.map(product=>{
+    const quantity=cart.get(product.id)||0;
+    const cardControl=quantity?`<div class="card-quantity" aria-label="${quantity} ${product.name} in bag"><button type="button" data-change="${product.id}" data-delta="-1" aria-label="Remove one ${product.name}">−</button><b aria-live="polite">${quantity}</b><button type="button" data-change="${product.id}" data-delta="1" aria-label="Add another ${product.name}">+</button></div>`:`<button class="product-action add-button" data-add="${product.id}" aria-label="Add ${product.name} to bag">${icon('plus')}</button>`;
+    return `
     <article class="product-card">
       <div class="product-image">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
         <button class="product-action favorite-button ${favorites.has(product.id)?'is-saved':''}" data-favorite="${product.id}" aria-label="${favorites.has(product.id)?'Remove':'Save'} ${product.name}" aria-pressed="${favorites.has(product.id)}">${icon('heart')}</button>
-        <button class="product-action add-button" data-add="${product.id}" aria-label="Add ${product.name} to bag">${icon('plus')}</button>
+        ${cardControl}
         <button class="product-action view-button" data-view="${product.id}" aria-label="View ${product.name} details">${icon('arrow')}</button>
       </div>
       <div class="product-meta"><div><h3>${product.name}</h3><p>${product.note}</p></div><strong>${money(product.price)}</strong></div>
-    </article>`).join(''):`<div class="no-results"><h3>Nothing matched just yet.</h3><p>Try another flower, colour or feeling.</p><button class="underlink" data-clear-search type="button"><span>Clear search</span>${icon('arrow')}</button></div>`;
+    </article>`}).join(''):`<div class="no-results"><h3>Nothing matched just yet.</h3><p>Try another flower, colour or feeling.</p><button class="underlink" data-clear-search type="button"><span>Clear search</span>${icon('arrow')}</button></div>`;
   document.querySelectorAll('[data-filter]').forEach(button=>{const isActive=button.dataset.filter===activeFilter;button.classList.toggle('active',isActive);button.setAttribute('aria-pressed',isActive)});
   observeCards();
 }
@@ -104,7 +107,7 @@ if('IntersectionObserver'in window){
 
 document.addEventListener('click',event=>{
   const add=event.target.closest('[data-add],[data-detail-add]');
-  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd);cart.set(id,(cart.get(id)||0)+1);renderCart();if(productDialog.open)closeDialog(productDialog);notify(`${products.find(product=>product.id===id).name} added to your flower bag`);return;}
+  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd);cart.set(id,(cart.get(id)||0)+1);renderCart();renderProducts();if(productDialog.open)closeDialog(productDialog);notify(`${products.find(product=>product.id===id).name} added to your flower bag`);return;}
   const favorite=event.target.closest('[data-favorite]');
   if(favorite){const id=Number(favorite.dataset.favorite);favorites.has(id)?favorites.delete(id):favorites.add(id);storeFavorites();renderProducts();notify(favorites.has(id)?'Saved for later':'Removed from saved flowers');return;}
   const view=event.target.closest('[data-view]');if(view){openProduct(Number(view.dataset.view));return;}
@@ -112,8 +115,8 @@ document.addEventListener('click',event=>{
   const filterLink=event.target.closest('[data-filter-link]');if(filterLink){activeFilter=filterLink.dataset.filterLink;searchTerm='';document.querySelector('#flower-search').value='';renderProducts();return;}
   if(event.target.closest('.bag-button,[data-open-bag]')){renderCart();openDialog(cartDialog);return;}
   const close=event.target.closest('.close-dialog');if(close){closeDialog(close.closest('dialog'));return;}
-  const change=event.target.closest('[data-change]');if(change){const id=Number(change.dataset.change),next=cart.get(id)+Number(change.dataset.delta);next>0?cart.set(id,next):cart.delete(id);renderCart();return;}
-  const remove=event.target.closest('[data-remove]');if(remove){cart.delete(Number(remove.dataset.remove));renderCart();return;}
+  const change=event.target.closest('[data-change]');if(change){const id=Number(change.dataset.change),next=cart.get(id)+Number(change.dataset.delta);next>0?cart.set(id,next):cart.delete(id);renderCart();renderProducts();return;}
+  const remove=event.target.closest('[data-remove]');if(remove){cart.delete(Number(remove.dataset.remove));renderCart();renderProducts();return;}
   if(event.target.closest('[data-browse]')){closeDialog(cartDialog);document.querySelector('#flowers').scrollIntoView({behavior:'smooth'});return;}
   if(event.target.closest('[data-clear-search]')){searchTerm='';document.querySelector('#flower-search').value='';renderProducts();return;}
   if(event.target.closest('.booking-open')){if(cartDialog.open)closeDialog(cartDialog);document.querySelector('#booking-form').hidden=false;document.querySelector('#booking-success').hidden=true;openDialog(bookingDialog);return;}

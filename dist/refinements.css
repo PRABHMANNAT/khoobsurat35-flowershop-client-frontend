@@ -78,6 +78,29 @@
   text-align: center;
 }
 
+/* Once selected, each card becomes a clear inline quantity control. */
+.card-quantity {
+  position: absolute;
+  bottom: .55rem;
+  left: .55rem;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 2.15rem 1.95rem 2.15rem;
+  align-items: center;
+  min-height: 2.4rem;
+  overflow: hidden;
+  border: 1px solid #fff8f2;
+  border-radius: 999px;
+  background: #4b1d2b;
+  color: #fff;
+  box-shadow: 0 7px 16px #35101d55;
+  animation: quantity-in .26s cubic-bezier(.2,.9,.25,1) both;
+}
+.card-quantity button { display: grid; place-items: center; height: 100%; border: 0; background: transparent; color: #fff; font: 1.25rem/1 var(--sans); transition: background .2s ease, transform .2s ease; }
+.card-quantity button:hover { background: #ffffff22; }.card-quantity button:active { transform: scale(.86); }
+.card-quantity b { display: grid; place-items: center; min-height: 1.45rem; border-right: 1px solid #ffffff2e; border-left: 1px solid #ffffff2e; font: 700 12px var(--sans); }
+@keyframes quantity-in { from { opacity: 0; transform: scale(.72); } to { opacity: 1; transform: scale(1); } }
+
 .sort-field {
   min-height: 3rem;
   padding: 0 .85rem;
