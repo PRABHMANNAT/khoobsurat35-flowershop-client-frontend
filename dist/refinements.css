@@ -1,0 +1,21 @@
+/* Final mobile polish: rose, cream, and plum with stronger contrast. */
+.hero-content {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  text-shadow: 0 2px 18px #260b16;
+}
+
+.hero h1 { color: #fffaf8; }
+
+.hero-subtitle {
+  font-weight: 600;
+  text-shadow: 0 2px 12px #260b16;
+}
+
+.hero-shade {
+  background: linear-gradient(180deg, #2d0f1912 0%, #30101d1c 30%, #35111fdc 100%);
+}
