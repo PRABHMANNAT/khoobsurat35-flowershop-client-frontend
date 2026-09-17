@@ -215,3 +215,21 @@
 .floating-nav a.active,.floating-nav a:hover,.floating-nav button:hover { background: #f2d6da; color: #4e1931; }
 .floating-nav .mobile-booking { background: #a84562; color: #fff; }
 .floating-nav button[data-open-bag] .cart-count { background: #d75f70; box-shadow: 0 0 0 2px #fffdfb; }
+
+/* The current section settles into a rose-plum pill rather than a subtle tint. */
+.floating-nav a,
+.floating-nav button {
+  transition: color .24s ease, background .28s cubic-bezier(.2,.8,.2,1), transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease;
+}
+.floating-nav a > svg,
+.floating-nav button > svg { transition: color .24s ease, background .28s ease, transform .32s cubic-bezier(.2,.9,.25,1); }
+.floating-nav a.active {
+  background: linear-gradient(145deg, #b44363, #7d2846);
+  color: #fff;
+  box-shadow: 0 5px 12px #76253f40;
+  transform: translateY(-.14rem);
+}
+.floating-nav a.active > svg { background: #ffffff24; color: #fff; transform: scale(1.12) rotate(-4deg); }
+.floating-nav a:not(.active):active,
+.floating-nav button:active { transform: scale(.92); }
+.floating-nav .mobile-booking:hover { background: #8d2f50; transform: translateY(-.1rem); }
