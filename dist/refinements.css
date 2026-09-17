@@ -160,3 +160,11 @@
 
 .service-list .service-icon svg { width: 1rem; }
 .service-list b { color: var(--wine); }
+
+.visit-details .button.dark {
+  border-color: #b24f68;
+  background: #b24f68;
+  box-shadow: 0 8px 16px #8734482d;
+}
+
+.visit-details .button.dark:hover { background: var(--wine); border-color: var(--wine); }
