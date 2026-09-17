@@ -168,3 +168,19 @@
 }
 
 .visit-details .button.dark:hover { background: var(--wine); border-color: var(--wine); }
+
+.site-header { background: #fffdfbf7; }
+.wordmark { color: #591d35; font-size: 2.05rem; }
+
+.floating-nav {
+  border-color: #c66279;
+  background: #fffdfbf2;
+  box-shadow: 0 12px 28px #63203845;
+}
+
+.floating-nav a,
+.floating-nav button { color: #68253e; font-weight: 700; }
+.floating-nav a svg,.floating-nav button > svg { width: 1.12rem; height: 1.12rem; stroke-width: 2; }
+.floating-nav a.active,.floating-nav a:hover,.floating-nav button:hover { background: #f2d6da; color: #4e1931; }
+.floating-nav .mobile-booking { background: #a84562; color: #fff; }
+.floating-nav button[data-open-bag] .cart-count { background: #d75f70; box-shadow: 0 0 0 2px #fffdfb; }
