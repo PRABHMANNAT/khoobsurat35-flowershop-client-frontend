@@ -1,0 +1,1 @@
+{"name":"khoobsurat35-flowershop-client-frontend","version":"1.0.0","private":true,"description":"Mobile-first floral storefront concept for Khoobsurat 35","scripts":{"dev":"node server.cjs","start":"node server.cjs","check":"node --check dist/app.js"}}
