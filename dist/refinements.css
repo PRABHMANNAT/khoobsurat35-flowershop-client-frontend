@@ -65,3 +65,15 @@
 .flower-cutouts img:last-child { margin-left: -.85rem; }
 .flower-cutouts span { display: grid; place-items: center; margin-left: -.85rem; background: var(--rose); color: #fff; }
 .flower-cutouts svg { width: 1.15rem; }
+
+.product-meta strong {
+  min-width: 3.65rem;
+  padding: .5rem .55rem;
+  border: 1px solid #e8b2bb;
+  border-radius: .45rem;
+  background: #fff0f1;
+  color: var(--wine);
+  font: 700 10px var(--sans);
+  letter-spacing: -.02em;
+  text-align: center;
+}
