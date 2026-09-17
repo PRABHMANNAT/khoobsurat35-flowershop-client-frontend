@@ -138,3 +138,25 @@
 
 .journal-call svg { width: 1rem; }
 .journal-call svg:last-child { margin-left: .3rem; }
+
+.service-list > a,
+.service-list > button {
+  grid-template-columns: auto 1fr auto;
+  padding: .95rem;
+  border-color: #e7c6ca;
+  background: #fffdfc;
+}
+
+.service-list .service-icon {
+  display: grid;
+  grid-row: span 2;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--pinkwash);
+  color: var(--rose);
+}
+
+.service-list .service-icon svg { width: 1rem; }
+.service-list b { color: var(--wine); }
