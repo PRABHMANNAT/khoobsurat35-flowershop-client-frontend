@@ -91,3 +91,20 @@
 .filter-bar { padding: .15rem; border-radius: 999px; background: #f5dddf; }
 .filter { border-color: transparent; background: transparent; color: var(--berry); font-weight: 700; }
 .filter.active { background: var(--wine); box-shadow: 0 4px 10px #5d1d302b; }
+
+.flower-marquee {
+  overflow: hidden;
+  margin: 2.6rem -1.15rem -4.5rem;
+  padding: .82rem 0;
+  border-top: 1px solid #edcbcf;
+  border-bottom: 1px solid #edcbcf;
+  background: #f8e4e4;
+  color: var(--berry);
+  white-space: nowrap;
+}
+
+.flower-marquee div { display: inline-flex; align-items: center; gap: 1rem; padding-left: 1rem; animation: flower-ticker 20s linear infinite; }
+.flower-marquee span { font: 8px var(--mono); letter-spacing: .1em; }
+.flower-marquee b { color: var(--rose); font-size: .75rem; }
+
+@keyframes flower-ticker { to { transform: translateX(-40%); } }
