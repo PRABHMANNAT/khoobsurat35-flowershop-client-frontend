@@ -236,7 +236,7 @@
 .floating-nav button[data-open-bag] > svg { color: #8a2748; background: #f7e0e5; }
 .floating-nav .mobile-booking > svg { width: 1.5rem; height: 1.5rem; padding: .2rem; background: #ffffff24; color: #fff; }
 .floating-nav a.active,.floating-nav a:hover,.floating-nav button:hover { background: #f2d6da; color: #4e1931; }
-.floating-nav .mobile-booking { background: linear-gradient(145deg, #9c3f69, #672242); color: #fffdf9; box-shadow: 0 5px 13px #68223f52; }
+.floating-nav .mobile-booking { background: linear-gradient(145deg, #c14e77, #882d55); color: #fffdf9; box-shadow: 0 5px 13px #7b294a4a; }
 .floating-nav button[data-open-bag] .cart-count { top: .1rem; right: .14rem; width: 1.38rem; height: 1.38rem; border: 2px solid #fffdfb; background: #c44967; color: #fff; box-shadow: 0 4px 9px #79243d48; font: 700 9px var(--sans); }
 
 /* The current section settles into a rose-plum pill rather than a subtle tint. */
@@ -255,4 +255,106 @@
 .floating-nav a.active > svg { background: #ffffff24; color: #fff; transform: scale(1.12) rotate(-4deg); }
 .floating-nav a:not(.active):active,
 .floating-nav button:active { transform: scale(.92); }
-.floating-nav .mobile-booking:hover { background: #7d2d55; transform: translateY(-.1rem); }
+.floating-nav .mobile-booking:hover { background: #9e365f; transform: translateY(-.1rem); }
+
+/* Mobile navigation: a calmer surface lets the active destination and the
+   booking action read as two deliberate, separate states. */
+@media (max-width: 719px) {
+  body { padding-bottom: 6.5rem; }
+
+  .site-header {
+    border-bottom-color: #ead7dc;
+    box-shadow: 0 4px 18px #5a1e3410;
+  }
+
+  .contact-button,
+  .bag-button {
+    width: 2.85rem;
+    min-width: 2.85rem;
+    height: 2.85rem;
+    border: 1px solid #ecd8dd;
+    background: #fff8f8;
+    box-shadow: 0 4px 10px #6320380b;
+    transition: transform .22s ease, background .22s ease, border-color .22s ease, color .22s ease;
+  }
+
+  .contact-button { color: #8f3a5b; }
+  .bag-button { color: #7a5133; }
+  .contact-button:hover,
+  .bag-button:hover { transform: translateY(-2px); border-color: #cf90a2; background: #fff; }
+  .contact-button:active,
+  .bag-button:active { transform: scale(.94); }
+  .bag-button .cart-count { right: -.1rem; bottom: -.08rem; background: #cf5572; }
+
+  .floating-nav {
+    bottom: .7rem;
+    width: min(calc(100% - 1.15rem), 29rem);
+    padding: .38rem;
+    border: 1px solid #e7ccd3;
+    border-radius: 1.35rem;
+    background: #fffdfbf5;
+    box-shadow: 0 15px 34px #5420373b, 0 3px 8px #54203714;
+  }
+
+  .floating-nav a,
+  .floating-nav button {
+    gap: .3rem;
+    min-height: 3.55rem;
+    border-radius: .96rem;
+    color: #79515f;
+    font-size: 8px;
+    letter-spacing: .01em;
+  }
+
+  .floating-nav a > svg,
+  .floating-nav button > svg {
+    width: 1.38rem;
+    height: 1.38rem;
+    padding: .24rem;
+    border-radius: .48rem;
+    stroke-width: 2;
+  }
+
+  .floating-nav a[data-nav="top"] > svg { background: #f7e8ed; color: #94405e; }
+  .floating-nav a[data-nav="flowers"] > svg { background: #f9e8f0; color: #ad4e73; }
+  .floating-nav a[data-nav="visit"] > svg { background: #e2f0eb; color: #39766b; }
+  .floating-nav button[data-open-bag] > svg { background: #f7ecdf; color: #936136; }
+
+  .floating-nav a:hover,
+  .floating-nav button:hover { background: #f8e9ed; color: #5e263e; }
+
+  .floating-nav a.active {
+    background: linear-gradient(145deg, #7e2f50, #5c203b);
+    color: #fff;
+    box-shadow: 0 6px 14px #63203838;
+    transform: translateY(-.12rem);
+  }
+
+  .floating-nav a.active > svg {
+    background: #ffffff20;
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  .floating-nav .mobile-booking {
+    background: linear-gradient(145deg, #d7688a, #a63b64);
+    color: #fff;
+    box-shadow: 0 6px 14px #8f345049;
+  }
+
+  .floating-nav .mobile-booking > svg { background: #ffffff25; color: #fff; }
+  .floating-nav .mobile-booking:hover { background: linear-gradient(145deg, #ca537c, #902c56); }
+
+  .floating-nav button[data-open-bag] .cart-count {
+    top: .28rem;
+    right: .3rem;
+    width: 1.12rem;
+    height: 1.12rem;
+    border: 2px solid #fffdfb;
+    background: #d35d73;
+    box-shadow: none;
+    font-size: 8px;
+  }
+
+  .scroll-top { bottom: 7rem; border: 1px solid #ead4d9; }
+}

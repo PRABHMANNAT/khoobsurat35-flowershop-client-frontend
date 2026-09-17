@@ -88,18 +88,28 @@ function activateSlide(index){
   document.querySelector('#hero-number').textContent=String(activeSlide+1).padStart(2,'0');
 }
 
+function setActiveNav(id){
+  document.querySelectorAll('[data-nav]').forEach(link=>{
+    const isActive=link.dataset.nav===id;
+    link.classList.toggle('active',isActive);
+    if(isActive) link.setAttribute('aria-current','page');
+    else link.removeAttribute('aria-current');
+  });
+}
+
 document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog)closeDialog(dialog)}));
 document.querySelector('#flower-search').addEventListener('input',event=>{searchTerm=event.target.value.trim().toLowerCase();renderProducts()});
 document.querySelector('#sort-products').addEventListener('change',event=>{sortBy=event.target.value;renderProducts()});
 document.querySelector('.scroll-top').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 document.querySelectorAll('[data-slide]').forEach(button=>button.addEventListener('click',()=>activateSlide(Number(button.dataset.slide))));
-setInterval(()=>activateSlide(activeSlide+1),5200);
+if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(()=>activateSlide(activeSlide+1),5200);
 window.addEventListener('scroll',()=>document.querySelector('.scroll-top').classList.toggle('show',window.scrollY>550),{passive:true});
 
 if('IntersectionObserver'in window){
   const navLinks=document.querySelectorAll('[data-nav]');
   const sections=['top','flowers','visit'].map(id=>document.querySelector(`#${id}`));
-  const navObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)navLinks.forEach(link=>link.classList.toggle('active',link.dataset.nav===entry.target.id))}),{rootMargin:'-35% 0px -55% 0px'});
+  setActiveNav('top');
+  const navObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)setActiveNav(entry.target.id)}),{rootMargin:'-35% 0px -55% 0px'});
   sections.forEach(section=>navObserver.observe(section));
   const studio=document.querySelector('.story-panel');
   new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('in-view')}),{threshold:.2}).observe(studio);
