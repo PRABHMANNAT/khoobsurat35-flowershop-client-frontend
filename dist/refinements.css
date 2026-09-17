@@ -42,3 +42,26 @@
 }
 
 .quick-links a .quick-icon svg { width: .95rem; }
+
+.products-section { position: relative; }
+
+.flower-cutouts {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  margin: 0 0 1.15rem;
+}
+
+.flower-cutouts img,
+.flower-cutouts span {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  box-shadow: 0 6px 14px #862e4126;
+}
+
+.flower-cutouts img { object-fit: cover; }
+.flower-cutouts img:last-child { margin-left: -.85rem; }
+.flower-cutouts span { display: grid; place-items: center; margin-left: -.85rem; background: var(--rose); color: #fff; }
+.flower-cutouts svg { width: 1.15rem; }
