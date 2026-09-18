@@ -1,92 +1,151 @@
-/* A high-contrast, touch-first dock for the five mobile destinations. */
-@media (max-width: 719px) {
+/* Compact, editorial mobile navigation. Desktop remains unchanged. */
+@media (max-width: 767px) {
+  .site-header {
+    height: 4.25rem;
+    padding: 0 1.1rem;
+    gap: .7rem;
+    border-bottom-color: #eedbdd;
+    background: #fffdfa;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .wordmark { color: #591d35; font-size: 1.85rem; }
+  .wordmark small { margin-top: .5rem; font-size: 6px; }
+  .header-actions { gap: .42rem; }
+  .contact-button,
+  .bag-button {
+    width: 2.55rem;
+    min-width: 2.55rem;
+    height: 2.55rem;
+    border: 1px solid #eedade;
+    border-radius: 50%;
+    background: #fffaf8;
+    box-shadow: none;
+    color: #7b3b54;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease;
+  }
+
+  .contact-button svg,
+  .bag-button svg { width: 1.23rem; height: 1.23rem; stroke-width: 2; }
+  .contact-button:active,
+  .bag-button:active { transform:scale(.94); }
+  .contact-button:hover,
+  .bag-button:hover { border-color:#d9aab7; background:#fff; }
+  .bag-button .cart-count {
+    right: -.12rem;
+    bottom: -.08rem;
+    width: 1.08rem;
+    height: 1.08rem;
+    border: 2px solid #fffdfa;
+    background: #bd4867;
+    box-shadow: none;
+    font: 700 7px var(--sans);
+  }
+
   .floating-nav {
-    bottom: max(.7rem, env(safe-area-inset-bottom));
-    width: min(calc(100% - 1rem), 31rem);
-    min-height: 5.35rem;
-    padding: .38rem;
-    border: 1px solid #e2c7d0;
-    border-radius: 1.45rem;
-    background: #fffdfcf7;
-    box-shadow: 0 16px 38px #481a303d, 0 3px 8px #481a3014;
-    backdrop-filter: blur(18px);
+    bottom: calc(.62rem + env(safe-area-inset-bottom));
+    left: .62rem;
+    width: calc(100% - 1.24rem);
+    max-width: none;
+    min-height: 4.45rem;
+    height: 4.45rem;
+    transform: none;
+    padding: .28rem .36rem;
+    border: 1px solid #e9cfd5;
+    border-radius: 1.35rem;
+    background: #fffdf9;
+    box-shadow: 0 8px 22px #51203920;
+    backdrop-filter: none;
   }
 
   .floating-nav a,
   .floating-nav button {
-    min-width: 0;
-    min-height: 4.45rem;
-    gap: .36rem;
-    border-radius: 1rem;
-    color: #64394a;
-    font: 700 8.5px/1 var(--sans);
-    letter-spacing: .02em;
-    text-shadow: none;
+    min-width: 2.75rem;
+    min-height: 3.72rem;
+    gap: .27rem;
+    border-radius: .82rem;
+    background: transparent;
+    color: #704655;
+    font: 700 10px/1 var(--sans);
+    letter-spacing: 0;
+    transition: opacity .18s ease, transform .18s ease, color .18s ease;
   }
 
   .floating-nav a > svg,
   .floating-nav button > svg {
-    width: 1.55rem;
-    height: 1.55rem;
-    padding: .29rem;
-    border-radius: .6rem;
-    background: #f7e8ed;
-    color: #8f3659;
-    stroke-width: 2.2;
+    width: 1.28rem;
+    height: 1.28rem;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #795161;
+    stroke-width: 2;
+    transition: background .18s ease, color .18s ease, transform .18s ease;
   }
 
-  .floating-nav a[data-nav="top"] > svg { background: #f3e8e5; color: #81435a; }
-  .floating-nav a[data-nav="flowers"] > svg { background: #f7e4ec; color: #a13662; }
-  .floating-nav a[data-nav="visit"] > svg { background: #e1f0e9; color: #287061; }
-  .floating-nav button[data-open-bag] > svg { background: #faefd8; color: #8c6334; }
-
   .floating-nav a.active {
-    background: #662444;
-    color: #fff;
-    box-shadow: inset 0 0 0 1px #ffffff2b, 0 6px 14px #56203a42;
-    transform: translateY(-.14rem);
+    background: transparent;
+    box-shadow: none;
+    color: #64233f;
+    transform: none;
   }
 
   .floating-nav a.active > svg {
-    background: #ffffff24;
-    color: #fff;
-    transform: scale(1.06);
+    width: 1.78rem;
+    height: 1.78rem;
+    padding: .36rem;
+    background: #64233f;
+    color: #fffaf5;
+    box-shadow: none;
+    transform: none;
   }
 
+  /* Booking remains noticeable without competing with the current location. */
   .floating-nav .mobile-booking {
-    background: linear-gradient(145deg, #cf597f, #9c315d);
-    color: #fff;
-    box-shadow: inset 0 0 0 1px #ffffff30, 0 6px 14px #8c294d47;
-    transform: translateY(-.14rem);
+    background: transparent;
+    box-shadow: none;
+    color: #704655;
+    transform: none;
   }
 
   .floating-nav .mobile-booking > svg {
-    width: 1.65rem;
-    height: 1.65rem;
-    background: #ffffff2b;
-    color: #fff;
+    width: 1.55rem;
+    height: 1.55rem;
+    padding: .28rem;
+    background: #f6e5e9;
+    color: #9b4b68;
   }
 
   .floating-nav a:hover,
-  .floating-nav button:hover { background: #f6e7ec; color: #542038; }
-  .floating-nav a.active:hover { background: #522038; color: #fff; }
-  .floating-nav .mobile-booking:hover { background: linear-gradient(145deg, #bd466f, #82244e); color: #fff; }
+  .floating-nav button:hover { background: transparent; color: #64233f; }
+  .floating-nav a:active,
+  .floating-nav button:active { opacity: .76; transform: scale(.94); }
+  .floating-nav a.active:active { transform: scale(.94); }
 
+  .floating-nav button[data-open-bag] { position: relative; }
   .floating-nav button[data-open-bag] .cart-count {
-    top: .12rem;
-    right: .27rem;
-    min-width: 1.14rem;
+    top: .18rem;
+    right: auto;
+    left: calc(50% + .34rem);
     width: auto;
-    height: 1.14rem;
-    padding: 0 .18rem;
-    border: 2px solid #fffdfc;
-    background: #cc4268;
+    min-width: .98rem;
+    height: .98rem;
+    padding: 0 .14rem;
+    border: 1.5px solid #fffdf9;
+    background: #bd4867;
     color: #fff;
-    box-shadow: 0 3px 7px #6d193738;
-    font: 800 8px/1 var(--sans);
+    box-shadow: none;
+    font: 700 7px/1 var(--sans);
   }
 
   .floating-nav a:focus-visible,
-  .floating-nav button:focus-visible { outline-color: #6d2349; outline-offset: 2px; }
-  body { padding-bottom: 7.5rem; }
+  .floating-nav button:focus-visible { outline: 2px solid #7b2d4b; outline-offset: 2px; }
+
+  body { padding-bottom: calc(5.85rem + env(safe-area-inset-bottom)); }
+  footer { padding-bottom: calc(7.4rem + env(safe-area-inset-bottom)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-nav *, .site-header * { transition: none !important; }
 }

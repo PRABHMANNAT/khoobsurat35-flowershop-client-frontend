@@ -108,7 +108,8 @@ window.addEventListener('scroll',()=>document.querySelector('.scroll-top').class
 if('IntersectionObserver'in window){
   const navLinks=document.querySelectorAll('[data-nav]');
   const sections=['top','flowers','visit'].map(id=>document.querySelector(`#${id}`));
-  setActiveNav('top');
+  const initialNav=location.hash.slice(1);
+  setActiveNav(['top','flowers','visit'].includes(initialNav)?initialNav:'top');
   const navObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)setActiveNav(entry.target.id)}),{rootMargin:'-35% 0px -55% 0px'});
   sections.forEach(section=>navObserver.observe(section));
   const studio=document.querySelector('.story-panel');
