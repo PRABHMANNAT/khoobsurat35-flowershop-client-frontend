@@ -211,6 +211,29 @@
 .map-open-link { position: absolute; z-index: 3; right: .75rem; bottom: .75rem; display: inline-flex; align-items: center; gap: .45rem; padding: .6rem .72rem; border-radius: 999px; background: var(--wine); color: #fff; box-shadow: 0 5px 12px #4920313d; font: 8px var(--mono); letter-spacing: .04em; }
 .map-open-link svg { width: .8rem; height: .8rem; }
 
+/* Keep hero copy readable when the rotating photograph is bright or busy. */
+.hero-shade {
+  background:
+    radial-gradient(ellipse at 22% 58%, rgb(42 9 24 / .58) 0%, rgb(42 9 24 / .28) 42%, transparent 72%),
+    linear-gradient(90deg, rgb(45 11 27 / .58) 0%, rgb(45 11 27 / .3) 42%, rgb(45 11 27 / .1) 78%, transparent 100%),
+    linear-gradient(180deg, rgb(42 9 24 / .2) 0%, rgb(42 9 24 / .24) 42%, rgb(42 9 24 / .84) 100%);
+}
+
+.hero-content {
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid rgb(255 247 241 / .28);
+  border-radius: .65rem;
+  background: linear-gradient(135deg, rgb(48 12 28 / .84), rgb(92 30 52 / .6));
+  box-shadow: 0 18px 40px rgb(31 6 17 / .4);
+  backdrop-filter: blur(6px) saturate(1.08);
+}
+
+.hero-content .kicker,
+.hero h1,
+.hero-subtitle {
+  text-shadow: 0 1px 0 rgb(42 9 24 / .3), 0 3px 20px rgb(30 5 16 / .52);
+}
+
 .header-actions { gap: .45rem; }
 .contact-button, .bag-button { min-width: 3rem; height: 3rem; }
 .contact-button svg, .bag-button svg { width: 1.45rem; height: 1.45rem; stroke-width: 2.1; }

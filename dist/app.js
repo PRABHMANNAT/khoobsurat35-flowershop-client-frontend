@@ -16,6 +16,21 @@ const suggestedProducts=[
 ];
 const allProducts=[...products,...suggestedProducts];
 const getProduct=id=>allProducts.find(item=>item.id===id);
+const categoryCollections={
+  roses:{kicker:'THE ROSE EDIT',title:'Roses for every feeling.',intro:'Soft, classic and full of meaning. Choose a rose-forward add-on to make your order feel even more personal.',items:[1,2,5,101]},
+  bouquets:{kicker:'THE BOUQUET EDIT',title:'A little more in bloom.',intro:'Seasonal colour, gathered with care. Add an extra bouquet to make the gesture feel beautifully abundant.',items:[
+    {id:4,image:'https://bluerosesflorist.com/cdn/shop/files/BRF-RB107-PhotoRoom_ea0952e1-7941-4dc4-814a-200af6c2e9e8.jpg?v=1703839447&width=533'},
+    {id:6,image:'https://www.nipponflorist.jp/uploaded/product/NFJP2585.webp'},
+    {id:103,image:'https://www.flowerstationdubai.com/cdn/shop/files/51-pink-roses-bouquet_5_grande.jpg?v=1687011301'},
+    {id:105,image:'https://static-assets-prod.fnp.com/images/pr/l/v20240711174919/aura-of-adorable-roses_6.jpg'}
+  ]},
+  gifts:{kicker:'THE GIFTING EDIT',title:'Flowers with a little extra.',intro:'Pair your flowers with something joyful, colourful or easy to give alongside the main moment.',items:[
+    {id:3,image:'https://www.jasmin-varna.com/phpThumb/phpThumb.php?h=660&q=90&src=%2Ffiles%2Factual_images%2Fb677be3f2e4e151a6aea5ad58916e59f-00107.jpg&w=480'},
+    {id:101,image:'https://bluerosesflorist.com/cdn/shop/files/BRF-RB107-PhotoRoom_ea0952e1-7941-4dc4-814a-200af6c2e9e8.jpg?v=1703839447&width=533'},
+    {id:102,image:'https://cdnnew.igp.com/f_auto%2Cq_auto%2Ct_pnopt10prodlp/products/p-mother-s-day-elegant-rose-bouquet-139330-m.jpg'},
+    {id:104,image:'https://mrsfiesta.com/cdn/shop/collections/DSC05194.jpg?v=1680707365'}
+  ]}
+};
 
 const cart=new Map();
 const savedFavorites=(()=>{try{return JSON.parse(localStorage.getItem('k35-favorites')||'[]')}catch{return[]}})();
@@ -25,6 +40,7 @@ const icon=name=>`<svg aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const cartDialog=document.querySelector('#cart-dialog');
 const bookingDialog=document.querySelector('#booking-dialog');
 const productDialog=document.querySelector('#product-dialog');
+const categoryDialog=document.querySelector('#category-dialog');
 const toast=document.querySelector('.toast');
 const mobileCartBanner=document.querySelector('#mobile-cart-banner');
 const mobileCartBannerLabel=document.querySelector('#mobile-cart-banner-label');
@@ -42,6 +58,16 @@ function filteredProducts(){
     return matchesFilter&&searchable.includes(searchTerm);
   });
   return visible.sort((a,b)=>sortBy==='low'?a.price-b.price:sortBy==='high'?b.price-a.price:sortBy==='name'?a.name.localeCompare(b.name):a.id-b.id);
+}
+
+function openCategoryGallery(key){
+  const collection=categoryCollections[key];
+  if(!collection)return;
+  document.querySelector('#category-dialog-kicker').textContent=collection.kicker;
+  document.querySelector('#category-dialog-title').textContent=collection.title;
+  document.querySelector('#category-dialog-intro').textContent=collection.intro;
+  document.querySelector('#category-gallery').innerHTML=collection.items.map(item=>{const product=getProduct(typeof item==='object'?item.id:item),image=typeof item==='object'&&item.image?item.image:product.image;return `<article class="category-gallery-card"><div class="category-gallery-image"><img src="${image}" alt="${product.name}" loading="lazy"><span class="category-gallery-tag">ADD-ON</span></div><div class="category-gallery-copy"><div><h3>${product.name}</h3><strong>${money(product.price)}</strong></div><p>${product.note}</p><button class="button dark" type="button" data-category-add="${product.id}"><span>Add to bag</span>${icon('plus')}</button></div></article>`}).join('');
+  openDialog(categoryDialog);
 }
 
 function observeCards(){
@@ -144,8 +170,10 @@ if('IntersectionObserver'in window){
 }
 
 document.addEventListener('click',event=>{
-  const add=event.target.closest('[data-add],[data-detail-add],[data-suggested-add]');
-  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd||add.dataset.suggestedAdd),product=getProduct(id);cart.set(id,(cart.get(id)||0)+1);refreshSuggestions();renderCart();renderProducts();if(productDialog.open&&!add.dataset.suggestedAdd)closeDialog(productDialog);showMobileCartBanner(product);notify(`${product.name} added to your flower bag`);return;}
+  const categoryLink=event.target.closest('[data-category-gallery]');
+  if(categoryLink){event.preventDefault();openCategoryGallery(categoryLink.dataset.categoryGallery);return;}
+  const add=event.target.closest('[data-add],[data-detail-add],[data-suggested-add],[data-category-add]');
+  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd||add.dataset.suggestedAdd||add.dataset.categoryAdd),product=getProduct(id);cart.set(id,(cart.get(id)||0)+1);refreshSuggestions();renderCart();renderProducts();if(productDialog.open&&!add.dataset.suggestedAdd&&!add.dataset.categoryAdd)closeDialog(productDialog);if(categoryDialog.open)closeDialog(categoryDialog);showMobileCartBanner(product);notify(`${product.name} added to your flower bag`);return;}
   const favorite=event.target.closest('[data-favorite]');
   if(favorite){const id=Number(favorite.dataset.favorite),product=products.find(product=>product.id===id);favorites.has(id)?favorites.delete(id):favorites.add(id);const isSaved=favorites.has(id);storeFavorites();renderProducts();showMobileCartBanner(product,isSaved?'Added to favourites':'Removed from favourites','dismiss');notify(isSaved?'Saved for later':'Removed from saved flowers');return;}
   const view=event.target.closest('[data-view]');if(view){openProduct(Number(view.dataset.view));return;}
