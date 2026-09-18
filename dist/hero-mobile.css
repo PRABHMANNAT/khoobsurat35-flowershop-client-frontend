@@ -92,4 +92,54 @@
   .hero-dots button { width: 1.6rem; height: .16rem; background: rgb(255 250 244 / .36); }
   .hero-dots button.active { width: 1.75rem; background: #fffaf4; }
   .hero-number { margin-left: auto !important; color: #fff2ed; font-size: 8px; }
+
+  .category-rail-label {
+    display: block;
+    margin: 1.1rem 1rem .55rem;
+    color: var(--berry);
+    font: 8px var(--mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .quick-links {
+    grid-auto-columns: min(80vw, 19.375rem);
+    gap: .7rem;
+    padding: 0 1rem 1.35rem;
+    background: var(--pinkwash);
+    scroll-padding-left: 1rem;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .quick-links::-webkit-scrollbar { display: none; }
+
+  .quick-links a {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    min-height: 5.75rem;
+    gap: .7rem;
+    padding: 1rem;
+    border: 1px solid #eccfd2;
+    border-radius: 1.15rem;
+    background: #fffdfa;
+    box-shadow: 0 2px 8px #7f31400d;
+    scroll-snap-align: start;
+    transition: transform .18s ease, background .18s ease;
+  }
+
+  .quick-links a:active { background: #fff7f5; transform: scale(.985); }
+  .quick-links a small { color: #a44c64; font: 8px var(--mono); }
+
+  .quick-links a .quick-icon {
+    width: 1.85rem;
+    height: 1.85rem;
+    background: #f6e3e4;
+    color: var(--berry);
+  }
+
+  .quick-links a .quick-icon svg { width: .92rem; }
+  .quick-links a b { font: 1.42rem/.9 var(--serif); }
+  .quick-links a > svg { width: 1rem; color: #7e324b; }
 }
+
+@media (min-width: 768px) { .category-rail-label { display: none; } }
