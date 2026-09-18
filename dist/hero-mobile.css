@@ -157,4 +157,8 @@
 
 @media (min-width: 768px) { .category-rail-label { display: none; } }
 
-@media (min-width: 768px) { .category-photo { display: none; } }
+@media (min-width: 768px) {
+  .quick-links a .quick-icon { overflow: hidden; }
+  .quick-links a .quick-icon svg { display: none; }
+  .quick-links .category-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+}
