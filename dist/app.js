@@ -7,6 +7,16 @@ const products=[
   {id:6,name:'Garden Colour Mix',type:'bouquet',price:1799,image:'images/unnamed%20(6).webp',note:'A bold mix for a full-hearted gesture.',detail:'A colourful, abundant mix for the moments that ask for something extra.'}
 ];
 
+const suggestedProducts=[
+  {id:101,name:'Blush Garden',type:'suggested',price:699,image:'images/suggested/blush-garden.avif',note:'A soft companion for your flower moment.'},
+  {id:102,name:'Soft Stems',type:'suggested',price:799,image:'images/suggested/soft-stems.avif',note:'Light, airy stems to make the gesture feel fuller.'},
+  {id:103,name:'Colourful Market Mix',type:'suggested',price:899,image:'images/suggested/colourful-market.avif',note:'A bright little extra with plenty of personality.'},
+  {id:104,name:'Peach Bouquet',type:'suggested',price:749,image:'images/suggested/peach-bouquet.avif',note:'Warm peach tones for an easy, happy pairing.'},
+  {id:105,name:'Garden Wrap',type:'suggested',price:849,image:'images/suggested/garden-wrap.avif',note:'Fresh colour and texture for the finishing touch.'}
+];
+const allProducts=[...products,...suggestedProducts];
+const getProduct=id=>allProducts.find(item=>item.id===id);
+
 const cart=new Map();
 const savedFavorites=(()=>{try{return JSON.parse(localStorage.getItem('k35-favorites')||'[]')}catch{return[]}})();
 const favorites=new Set(savedFavorites);
@@ -16,7 +26,10 @@ const cartDialog=document.querySelector('#cart-dialog');
 const bookingDialog=document.querySelector('#booking-dialog');
 const productDialog=document.querySelector('#product-dialog');
 const toast=document.querySelector('.toast');
-let activeFilter='all',searchTerm='',sortBy='featured',activeSlide=0;
+const mobileCartBanner=document.querySelector('#mobile-cart-banner');
+const mobileCartBannerLabel=document.querySelector('#mobile-cart-banner-label');
+const mobileCartProduct=document.querySelector('#mobile-cart-product');
+let activeFilter='all',searchTerm='',sortBy='featured',activeSlide=0,suggestionSelection=[];
 
 document.querySelector('#year').textContent=new Date().getFullYear();
 const today=new Date();
@@ -58,18 +71,32 @@ function renderProducts(){
   observeCards();
 }
 
+function refreshSuggestions(){
+  const available=suggestedProducts.filter(product=>!cart.has(product.id));
+  const count=Math.min(1+Math.floor(Math.random()*2),available.length);
+  suggestionSelection=available.sort(()=>Math.random()-.5).slice(0,count);
+}
+
+function renderSuggestions(){
+  const visible=suggestionSelection.filter(product=>!cart.has(product.id));
+  if(!visible.length)return '';
+  return `<section class="cart-suggestions" aria-label="Suggested flowers"><div class="cart-suggestions-head"><div><p class="kicker">A LITTLE EXTRA</p><h3>Suggested for you</h3></div><span>Pair it with your flowers</span></div><div class="cart-suggestion-grid">${visible.map(product=>`<article class="cart-suggestion"><div class="cart-suggestion-image"><img src="${product.image}" alt="${product.name}" loading="lazy"><span class="suggested-tag">SUGGESTED</span><button class="cart-suggestion-add" type="button" data-suggested-add="${product.id}" aria-label="Add ${product.name} to bag">${icon('plus')}</button></div><div class="cart-suggestion-meta"><h4>${product.name}</h4><p>${product.note}</p><strong>${money(product.price)}</strong></div></article>`).join('')}</div></section>`;
+}
+
 function renderCart(){
   let total=0,count=0;
   const items=[...cart].map(([id,quantity])=>{
-    const product=products.find(item=>item.id===id);total+=product.price*quantity;count+=quantity;
+    const product=getProduct(id);total+=product.price*quantity;count+=quantity;
     return `<div class="cart-line"><img src="${product.image}" alt="${product.name}"><div><h3>${product.name}</h3><p>${money(product.price)}</p><div class="quantity"><button data-change="${id}" data-delta="-1" aria-label="Decrease quantity">−</button><span>${quantity}</span><button data-change="${id}" data-delta="1" aria-label="Increase quantity">+</button></div></div><button class="remove" data-remove="${id}">Remove</button></div>`;
   });
   document.querySelectorAll('.cart-count').forEach(element=>element.textContent=count);
-  document.querySelector('#cart-body').innerHTML=items.length?items.join(''):`<div class="empty"><p class="empty-mark">✦</p><h3>Your flower bag is waiting.</h3><p>Choose something lovely for someone — including you.</p><button class="underlink" data-browse type="button"><span>Browse the flower edit</span>${icon('arrow')}</button></div>`;
+  document.querySelector('#cart-body').innerHTML=items.length?`${items.join('')}${renderSuggestions()}`:`<div class="empty"><p class="empty-mark">✦</p><h3>Your flower bag is waiting.</h3><p>Choose something lovely for someone — including you.</p><button class="underlink" data-browse type="button"><span>Browse the flower edit</span>${icon('arrow')}</button></div>`;
   document.querySelector('#cart-bottom').innerHTML=items.length?`<div class="subtotal"><span>Subtotal</span><b>${money(total)}</b></div><button class="button dark booking-open" type="button"><span>Plan a flower moment</span>${icon('calendar')}</button><p class="cart-note">A visual shopping preview only — no payment or order is sent.</p>`:'';
 }
 
 function notify(message){toast.textContent=message;toast.classList.add('show');clearTimeout(notify.timer);notify.timer=setTimeout(()=>toast.classList.remove('show'),2600)}
+function showMobileCartBanner(product,label='Added to your bag',action='cart'){mobileCartBannerLabel.textContent=label;mobileCartProduct.textContent=product.name;mobileCartBanner.dataset.action=action;mobileCartBanner.querySelector('[data-mobile-cart]').innerHTML=`${action==='cart'?'Go to bag':'Keep browsing'} ${icon(action==='cart'?'arrow':'close')}`;mobileCartBanner.hidden=false;requestAnimationFrame(()=>mobileCartBanner.classList.add('is-visible'))}
+function hideMobileCartBanner(){mobileCartBanner.classList.remove('is-visible');setTimeout(()=>{if(!mobileCartBanner.classList.contains('is-visible'))mobileCartBanner.hidden=true},220)}
 function openDialog(dialog){dialog.showModal();document.body.classList.add('modal-open')}
 function closeDialog(dialog){dialog.close();document.body.classList.remove('modal-open')}
 function storeFavorites(){try{localStorage.setItem('k35-favorites',JSON.stringify([...favorites]))}catch{}}
@@ -117,13 +144,15 @@ if('IntersectionObserver'in window){
 }
 
 document.addEventListener('click',event=>{
-  const add=event.target.closest('[data-add],[data-detail-add]');
-  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd);cart.set(id,(cart.get(id)||0)+1);renderCart();renderProducts();if(productDialog.open)closeDialog(productDialog);notify(`${products.find(product=>product.id===id).name} added to your flower bag`);return;}
+  const add=event.target.closest('[data-add],[data-detail-add],[data-suggested-add]');
+  if(add){const id=Number(add.dataset.add||add.dataset.detailAdd||add.dataset.suggestedAdd),product=getProduct(id);cart.set(id,(cart.get(id)||0)+1);refreshSuggestions();renderCart();renderProducts();if(productDialog.open&&!add.dataset.suggestedAdd)closeDialog(productDialog);showMobileCartBanner(product);notify(`${product.name} added to your flower bag`);return;}
   const favorite=event.target.closest('[data-favorite]');
-  if(favorite){const id=Number(favorite.dataset.favorite);favorites.has(id)?favorites.delete(id):favorites.add(id);storeFavorites();renderProducts();notify(favorites.has(id)?'Saved for later':'Removed from saved flowers');return;}
+  if(favorite){const id=Number(favorite.dataset.favorite),product=products.find(product=>product.id===id);favorites.has(id)?favorites.delete(id):favorites.add(id);const isSaved=favorites.has(id);storeFavorites();renderProducts();showMobileCartBanner(product,isSaved?'Added to favourites':'Removed from favourites','dismiss');notify(isSaved?'Saved for later':'Removed from saved flowers');return;}
   const view=event.target.closest('[data-view]');if(view){openProduct(Number(view.dataset.view));return;}
   const filter=event.target.closest('[data-filter]');if(filter){activeFilter=filter.dataset.filter;renderProducts();return;}
   const filterLink=event.target.closest('[data-filter-link]');if(filterLink){activeFilter=filterLink.dataset.filterLink;searchTerm='';document.querySelector('#flower-search').value='';renderProducts();return;}
+  if(event.target.closest('[data-mobile-cart]')){if(mobileCartBanner.dataset.action==='cart'){hideMobileCartBanner();renderCart();openDialog(cartDialog)}else hideMobileCartBanner();return;}
+  if(event.target.closest('[data-close-mobile-cart]')){hideMobileCartBanner();return;}
   if(event.target.closest('.bag-button,[data-open-bag]')){renderCart();openDialog(cartDialog);return;}
   const close=event.target.closest('.close-dialog');if(close){closeDialog(close.closest('dialog'));return;}
   const change=event.target.closest('[data-change]');if(change){const id=Number(change.dataset.change),next=cart.get(id)+Number(change.dataset.delta);next>0?cart.set(id,next):cart.delete(id);renderCart();renderProducts();return;}
