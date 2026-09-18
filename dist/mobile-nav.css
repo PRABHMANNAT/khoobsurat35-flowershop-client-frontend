@@ -1,0 +1,92 @@
+/* A high-contrast, touch-first dock for the five mobile destinations. */
+@media (max-width: 719px) {
+  .floating-nav {
+    bottom: max(.7rem, env(safe-area-inset-bottom));
+    width: min(calc(100% - 1rem), 31rem);
+    min-height: 5.35rem;
+    padding: .38rem;
+    border: 1px solid #e2c7d0;
+    border-radius: 1.45rem;
+    background: #fffdfcf7;
+    box-shadow: 0 16px 38px #481a303d, 0 3px 8px #481a3014;
+    backdrop-filter: blur(18px);
+  }
+
+  .floating-nav a,
+  .floating-nav button {
+    min-width: 0;
+    min-height: 4.45rem;
+    gap: .36rem;
+    border-radius: 1rem;
+    color: #64394a;
+    font: 700 8.5px/1 var(--sans);
+    letter-spacing: .02em;
+    text-shadow: none;
+  }
+
+  .floating-nav a > svg,
+  .floating-nav button > svg {
+    width: 1.55rem;
+    height: 1.55rem;
+    padding: .29rem;
+    border-radius: .6rem;
+    background: #f7e8ed;
+    color: #8f3659;
+    stroke-width: 2.2;
+  }
+
+  .floating-nav a[data-nav="top"] > svg { background: #f3e8e5; color: #81435a; }
+  .floating-nav a[data-nav="flowers"] > svg { background: #f7e4ec; color: #a13662; }
+  .floating-nav a[data-nav="visit"] > svg { background: #e1f0e9; color: #287061; }
+  .floating-nav button[data-open-bag] > svg { background: #faefd8; color: #8c6334; }
+
+  .floating-nav a.active {
+    background: #662444;
+    color: #fff;
+    box-shadow: inset 0 0 0 1px #ffffff2b, 0 6px 14px #56203a42;
+    transform: translateY(-.14rem);
+  }
+
+  .floating-nav a.active > svg {
+    background: #ffffff24;
+    color: #fff;
+    transform: scale(1.06);
+  }
+
+  .floating-nav .mobile-booking {
+    background: linear-gradient(145deg, #cf597f, #9c315d);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px #ffffff30, 0 6px 14px #8c294d47;
+    transform: translateY(-.14rem);
+  }
+
+  .floating-nav .mobile-booking > svg {
+    width: 1.65rem;
+    height: 1.65rem;
+    background: #ffffff2b;
+    color: #fff;
+  }
+
+  .floating-nav a:hover,
+  .floating-nav button:hover { background: #f6e7ec; color: #542038; }
+  .floating-nav a.active:hover { background: #522038; color: #fff; }
+  .floating-nav .mobile-booking:hover { background: linear-gradient(145deg, #bd466f, #82244e); color: #fff; }
+
+  .floating-nav button[data-open-bag] .cart-count {
+    top: .12rem;
+    right: .27rem;
+    min-width: 1.14rem;
+    width: auto;
+    height: 1.14rem;
+    padding: 0 .18rem;
+    border: 2px solid #fffdfc;
+    background: #cc4268;
+    color: #fff;
+    box-shadow: 0 3px 7px #6d193738;
+    font: 800 8px/1 var(--sans);
+  }
+
+  .floating-nav a:focus-visible,
+  .floating-nav button:focus-visible { outline-color: #6d2349; outline-offset: 2px; }
+  body { padding-bottom: 7.5rem; }
+}
