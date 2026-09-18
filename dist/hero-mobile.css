@@ -1,0 +1,33 @@
+/* Editorial mobile hero treatment; desktop retains the existing composition. */
+@media (max-width: 767px) {
+  .hero {
+    height: clamp(34rem, 78svh, 41rem);
+    min-height: 34rem;
+    max-height: 41rem;
+    isolation: isolate;
+  }
+
+  .hero-slide {
+    will-change: opacity, transform;
+    transform: scale(1.035);
+  }
+
+  .hero-slide.active { transform: scale(1); }
+
+  .hero-shade {
+    background: linear-gradient(
+      180deg,
+      rgb(47 16 27 / 0) 0%,
+      rgb(47 16 27 / .06) 34%,
+      rgb(47 16 27 / .22) 61%,
+      rgb(41 11 22 / .76) 100%
+    );
+  }
+
+  .hero-content {
+    right: 1.25rem;
+    bottom: 5.1rem;
+    left: 1.25rem;
+    max-width: 20rem;
+  }
+}
