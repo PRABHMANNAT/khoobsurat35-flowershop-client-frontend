@@ -26,8 +26,70 @@
 
   .hero-content {
     right: 1.25rem;
-    bottom: 5.1rem;
+    bottom: 5.7rem;
     left: 1.25rem;
     max-width: 20rem;
   }
+
+  .hero-content .kicker {
+    margin-bottom: .8rem;
+    color: #ffe5de;
+    font-size: 8px;
+    letter-spacing: .13em;
+  }
+
+  .hero h1 {
+    max-width: 18rem;
+    font-size: clamp(2.25rem, 9.25vw, 3rem);
+    line-height: .92;
+    letter-spacing: -.055em;
+  }
+
+  .hero h1 i {
+    display: block;
+    margin-top: .04em;
+    font-size: 1.28em;
+    line-height: .8;
+  }
+
+  .hero-subtitle {
+    max-width: 19rem;
+    margin: 1rem 0 1.2rem;
+    color: #fff9f4;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.46;
+  }
+
+  .hero-button {
+    min-height: 3.1rem;
+    min-width: 10.9rem;
+    padding: .65rem .95rem .65rem 1.2rem;
+    border-color: #fffaf2;
+    background: #fffaf2;
+    box-shadow: none;
+    color: var(--wine);
+    font: 700 10px var(--sans);
+    letter-spacing: .01em;
+    text-transform: none;
+    transition: transform .18s ease, background .18s ease, color .18s ease;
+  }
+
+  .hero-button svg { width: 1.05rem; height: 1.05rem; transition: transform .18s ease; }
+  .hero-button:hover { background: #fffaf2; box-shadow: none; color: var(--wine); transform: none; }
+  .hero-button:active { transform: scale(.98); }
+  .hero-button:hover svg { transform: translateX(3px); }
+
+  .hero-bottom {
+    right: 1.25rem;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    min-height: 1.15rem;
+  }
+
+  .hero-bottom > p:not(.hero-number) { display: none; }
+  .hero-dots { position: absolute; left: 50%; gap: .36rem; transform: translateX(-50%); }
+  .hero-dots button { width: 1.6rem; height: .16rem; background: rgb(255 250 244 / .36); }
+  .hero-dots button.active { width: 1.75rem; background: #fffaf4; }
+  .hero-number { margin-left: auto !important; color: #fff2ed; font-size: 8px; }
 }
