@@ -1,5 +1,7 @@
 /* Editorial mobile hero treatment; desktop retains the existing composition. */
 @media (max-width: 767px) {
+  body { overflow-x: hidden; }
+
   .hero {
     height: clamp(34rem, 78svh, 41rem);
     min-height: 34rem;
@@ -140,6 +142,13 @@
   .quick-links a .quick-icon svg { width: .92rem; }
   .quick-links a b { font: 1.42rem/.9 var(--serif); }
   .quick-links a > svg { width: 1rem; color: #7e324b; }
+}
+
+@media (max-width: 767px) and (max-height: 620px) {
+  .hero-content { bottom: 10.1rem; }
+  .hero-content .kicker { margin-bottom: .6rem; }
+  .hero-subtitle { margin: .75rem 0 .9rem; font-size: 12.5px; }
+  .hero-button { min-height: 3rem; }
 }
 
 @media (min-width: 768px) { .category-rail-label { display: none; } }
